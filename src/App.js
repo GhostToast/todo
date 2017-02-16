@@ -7,30 +7,27 @@ class ToDoItem extends Component {
 		this.props.done(this.props.todo);
 	}
 	render() {
-		return <li onClick={this.done}>{this.props.todo}</li>
+		return <li onClick={this.done.bind(this)}>{this.props.todo}</li>
 	}
 }
 
 class ToDoList extends Component {
 	constructor(props) {
 		super(props);
-		//this.props = this.props.bind(this);
 		this.state = { todos: props.todos };
 	}
 
-	add(props) {
-		let todos = this.props.todos;
-		todos.push( ReactDOM.findDOMNode( this.refs.newItemValue ).value );
+	add() {
+		this.props.todos.push( ReactDOM.findDOMNode( this.refs.newItemValue ).value );
 		ReactDOM.findDOMNode( this.refs.newItemValue ).value = '';
-		localStorage.setItem( 'todos', JSON.stringify( todos ) );
-		this.setState( { todos: todos } );
+		localStorage.setItem( 'todos', JSON.stringify( this.props.todos ) );
+		this.setState( { todos: this.props.todos } );
 	}
 
 	done() {
-		let todos = this.props.todos;
-		todos.splice( todos.indexOf( todos ), 1 );
-		localStorage.setItem( 'todos', JSON.stringify( todos ) );
-		this.setState( { todos: todos } );
+		this.props.todos.splice( this.props.todos.indexOf( this.props.todo ), 1 );
+		localStorage.setItem( 'todos', JSON.stringify( this.props.todos ) );
+		this.setState( { todos: this.props.todos } );
 	}
 
 	render() {
