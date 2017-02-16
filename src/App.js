@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'; // Need this to find DOM elements.
 import './App.css';
 
+/**
+ * Generic handler for to-do (list) items. Handles mapping "done" property of items.
+ */
 class ToDoItem extends Component {
 	done() {
 		this.props.done(this.props.todo);
@@ -11,7 +14,15 @@ class ToDoItem extends Component {
 	}
 }
 
+/**
+ * List management.
+ */
 class ToDoList extends Component {
+	/**
+	 * Create initial state from passed properties.
+	 *
+	 * @param props
+	 */
 	constructor(props) {
 		super(props);
 
@@ -21,6 +32,9 @@ class ToDoList extends Component {
 		};
 	}
 
+	/**
+	 * Add a list item to the "to do" list.
+	 */
 	add() {
 		this.props.todos.push( ReactDOM.findDOMNode( this.refs.newItemValue ).value );
 		ReactDOM.findDOMNode( this.refs.newItemValue ).value = '';
@@ -28,13 +42,22 @@ class ToDoList extends Component {
 		this.setState( { todos: this.props.todos } );
 	}
 
+	/**
+	 * Clear all items from the "completed" list.
+	 */
 	clear() {
 		localStorage.removeItem( 'finished' );
 		this.setState( { finished: [] } );
 	}
 
-	done(todo) {
-		let finishedKey = this.props.todos.indexOf( todo );
+	/**
+	 * Handler for completing a "to-do" from the main list.
+	 * Moves the item to the "completed" list and updates storage models.
+	 *
+	 * @param item
+	 */
+	complete(item) {
+		let finishedKey = this.props.todos.indexOf( item );
 		let finishedVal = this.props.todos[ finishedKey ];
 		this.props.todos.splice( finishedKey, 1 );
 		this.props.finished.push( finishedVal );
@@ -46,8 +69,14 @@ class ToDoList extends Component {
 		} );
 	}
 
-	incomplete(todo) {
-		let unfinishedKey = this.props.finished.indexOf( todo );
+	/**
+	 * Handler for uncompleting an item from the "completed" list.
+	 * Moves the item to the "to-do" list and updates storage models.
+	 *
+	 * @param item
+	 */
+	incomplete(item) {
+		let unfinishedKey = this.props.finished.indexOf( item );
 		let unfinishedVal = this.props.finished[ unfinishedKey ];
 		this.props.finished.splice( unfinishedKey, 1 );
 		this.props.todos.push( unfinishedVal );
@@ -59,6 +88,11 @@ class ToDoList extends Component {
 		} );
 	}
 
+	/**
+	 * Main view.
+	 *
+	 * @return {XML}
+	 */
 	render() {
 		return (
 			<div>
@@ -66,7 +100,7 @@ class ToDoList extends Component {
 				<ul>
 					{
 						this.state.todos.map( function( todo ) {
-							return <ToDoItem key={this.state.todos.indexOf( todo )} todo={todo} done={this.done.bind(this)} />
+							return <ToDoItem key={this.state.todos.indexOf( todo )} todo={todo} done={this.complete.bind(this)} />
 						}.bind( this ) )
 					}
 				</ul>
@@ -89,8 +123,16 @@ class ToDoList extends Component {
 	}
 }
 
+/**
+ * Wrapper for the stuff.
+ */
 class App extends Component {
 
+	/**
+	 * Instantiate our data models from local if present, else empty arrays.
+	 *
+	 * @return {XML}
+	 */
 	render() {
 		let todos = JSON.parse(localStorage.getItem('todos')) || [];
 		let finished = JSON.parse(localStorage.getItem('finished')) || [];
