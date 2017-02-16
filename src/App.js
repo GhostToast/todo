@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
 
-
 class ToDoItem extends Component {
 	done() {
 		this.props.done(this.props.todo);
@@ -15,11 +14,11 @@ class ToDoItem extends Component {
 class ToDoList extends Component {
 	constructor(props) {
 		super(props);
-		this.props = props;
-		this.state = { todos: this.props.todos };
+		//this.props = this.props.bind(this);
+		this.state = { todos: props.todos };
 	}
 
-	add() {
+	add(props) {
 		let todos = this.props.todos;
 		todos.push( ReactDOM.findDOMNode( this.refs.newItemValue ).value );
 		ReactDOM.findDOMNode( this.refs.newItemValue ).value = '';
@@ -41,12 +40,12 @@ class ToDoList extends Component {
 				<ul>
 				{
 					this.state.todos.map( function( todo ) {
-						return <ToDoItem todo={todo} done={this.done} />
+						return <ToDoItem key={this.state.todos.indexOf( todo )} todo={todo} done={this.done.bind(this)} />
 					}.bind( this ) )
 				}
 				</ul>
-				<input name="newItemValue" type="text" />
-				<input name="newItemButton" type="button" color='blue' value="Add New Item" onClick={this.add} />
+				<input ref="newItemValue" name="newItemValue" type="text" />
+				<input ref="newItemButton" name="newItemButton" type="button" color='blue' value="Add New Item" onClick={this.add.bind(this)} />
 			</div>
 		);
 	}
