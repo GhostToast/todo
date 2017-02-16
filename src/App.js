@@ -29,7 +29,7 @@ class ToDoList extends Component {
 	}
 
 	clear() {
-		localStorage.setItem( 'finished', [] );
+		localStorage.removeItem( 'finished' );
 		this.setState( { finished: [] } );
 	}
 
