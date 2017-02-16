@@ -28,6 +28,11 @@ class ToDoList extends Component {
 		this.setState( { todos: this.props.todos } );
 	}
 
+	clear() {
+		localStorage.setItem( 'finished', [] );
+		this.setState( { finished: [] } );
+	}
+
 	done(todo) {
 		let finishedKey = this.props.todos.indexOf( todo );
 		let finishedVal = this.props.todos[ finishedKey ];
@@ -76,7 +81,9 @@ class ToDoList extends Component {
 				</ul>
 
 				<input ref="newItemValue" name="newItemValue" type="text" />
-				<input ref="newItemButton" name="newItemButton" type="button" color='blue' value="Add New Item" onClick={this.add.bind(this)} />
+				<input ref="newItemButton" name="newItemButton" type="button" value="Add New Item" onClick={this.add.bind(this)} />
+				<br />
+				<input ref="clearCompleted" name="clearCompleted" type="button" value="Clear Completed Items" onClick={this.clear.bind(this)} />
 			</div>
 		);
 	}
