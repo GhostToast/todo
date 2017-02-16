@@ -36,10 +36,19 @@ class ToDoList extends Component {
 	 * Add a list item to the "to do" list.
 	 */
 	add() {
-		this.props.todos.push( ReactDOM.findDOMNode( this.refs.newItemValue ).value );
+		let newTodo = ReactDOM.findDOMNode( this.refs.newItemValue ).value;
+		if ( this.props.todos.indexOf( newTodo ) !== -1 ) {
+			this.dupeWarn();
+			return;
+		}
+		this.props.todos.push( newTodo );
 		ReactDOM.findDOMNode( this.refs.newItemValue ).value = '';
 		localStorage.setItem( 'todos', JSON.stringify( this.props.todos ) );
 		this.setState( { todos: this.props.todos } );
+	}
+
+	dupeWarn() {
+		alert( 'You done messed up A-A-Ron!');
 	}
 
 	/**
@@ -59,6 +68,12 @@ class ToDoList extends Component {
 	complete(item) {
 		let finishedKey = this.props.todos.indexOf( item );
 		let finishedVal = this.props.todos[ finishedKey ];
+
+		if ( this.props.todos.indexOf( finishedVal ) !== -1 ) {
+			this.dupeWarn();
+			return;
+		}
+
 		this.props.todos.splice( finishedKey, 1 );
 		this.props.finished.push( finishedVal );
 		localStorage.setItem( 'todos', JSON.stringify( this.props.todos ) );
@@ -78,6 +93,12 @@ class ToDoList extends Component {
 	incomplete(item) {
 		let unfinishedKey = this.props.finished.indexOf( item );
 		let unfinishedVal = this.props.finished[ unfinishedKey ];
+
+		if ( this.props.finished.indexOf( unfinishedVal ) !== -1 ) {
+			this.dupeWarn();
+			return;
+		}
+
 		this.props.finished.splice( unfinishedKey, 1 );
 		this.props.todos.push( unfinishedVal );
 		localStorage.setItem( 'todos', JSON.stringify( this.props.todos ) );
