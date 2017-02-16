@@ -14,7 +14,11 @@ class ToDoItem extends Component {
 class ToDoList extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { todos: props.todos };
+
+		this.state = {
+			todos: props.todos,
+			finished: props.finished,
+		};
 	}
 
 	add() {
@@ -24,23 +28,53 @@ class ToDoList extends Component {
 		this.setState( { todos: this.props.todos } );
 	}
 
-	done() {
-		this.props.todos.splice( this.props.todos.indexOf( this.props.todo ), 1 );
+	done(todo) {
+		let finishedKey = this.props.todos.indexOf( todo );
+		let finishedVal = this.props.todos[ finishedKey ];
+		this.props.todos.splice( finishedKey, 1 );
+		this.props.finished.push( finishedVal );
 		localStorage.setItem( 'todos', JSON.stringify( this.props.todos ) );
-		this.setState( { todos: this.props.todos } );
+		localStorage.setItem( 'finished', JSON.stringify( this.props.finished ) );
+		this.setState( {
+			todos: this.props.todos,
+			finished: this.props.finished,
+		} );
+	}
+
+	incomplete(todo) {
+		let unfinishedKey = this.props.finished.indexOf( todo );
+		let unfinishedVal = this.props.finished[ unfinishedKey ];
+		this.props.finished.splice( unfinishedKey, 1 );
+		this.props.todos.push( unfinishedVal );
+		localStorage.setItem( 'todos', JSON.stringify( this.props.todos ) );
+		localStorage.setItem( 'finished', JSON.stringify( this.props.finished ) );
+		this.setState( {
+			todos: this.props.todos,
+			finished: this.props.finished,
+		} );
 	}
 
 	render() {
 		return (
 			<div>
-				<h1>Todos: {this.props.todos.length}</h1>
+				<h2>Things To Do: {this.state.todos.length}</h2>
 				<ul>
-				{
-					this.state.todos.map( function( todo ) {
-						return <ToDoItem key={this.state.todos.indexOf( todo )} todo={todo} done={this.done.bind(this)} />
-					}.bind( this ) )
-				}
+					{
+						this.state.todos.map( function( todo ) {
+							return <ToDoItem key={this.state.todos.indexOf( todo )} todo={todo} done={this.done.bind(this)} />
+						}.bind( this ) )
+					}
 				</ul>
+
+				<h2> Things Done: {this.state.finished.length}</h2>
+				<ul style={{textDecoration: 'line-through'}}>
+					{
+						this.state.finished.map( function( todo ) {
+							return <ToDoItem key={this.state.finished.indexOf( todo )} todo={todo} done={this.incomplete.bind(this)} />
+						}.bind( this ) )
+					}
+				</ul>
+
 				<input ref="newItemValue" name="newItemValue" type="text" />
 				<input ref="newItemButton" name="newItemButton" type="button" color='blue' value="Add New Item" onClick={this.add.bind(this)} />
 			</div>
@@ -52,8 +86,9 @@ class App extends Component {
 
 	render() {
 		let todos = JSON.parse(localStorage.getItem('todos')) || [];
+		let finished = JSON.parse(localStorage.getItem('finished')) || [];
 		return (
-			<ToDoList todos={todos} />
+			<ToDoList todos={todos} finished={finished} />
 		);
 	}
 }
