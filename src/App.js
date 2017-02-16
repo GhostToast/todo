@@ -35,7 +35,8 @@ class ToDoList extends Component {
 	/**
 	 * Add a list item to the "to do" list.
 	 */
-	add() {
+	add(event) {
+		event.preventDefault();
 		let newTodo = ReactDOM.findDOMNode( this.refs.newItemValue ).value;
 		if ( this.props.todos.indexOf( newTodo ) !== -1 ) {
 			this.dupeWarn();
@@ -134,11 +135,12 @@ class ToDoList extends Component {
 						}.bind( this ) )
 					}
 				</ul>
-
-				<input ref="newItemValue" name="newItemValue" type="text" />
-				<input ref="newItemButton" name="newItemButton" type="button" value="Add New Item" onClick={this.add.bind(this)} />
-				<br />
-				<input ref="clearCompleted" name="clearCompleted" type="button" value="Clear Completed Items" onClick={this.clear.bind(this)} />
+				<form onSubmit={this.add.bind(this)}>
+					<input ref="newItemValue" name="newItemValue" type="text" />
+					<input ref="newItemButton" name="newItemButton" type="submit" value="Add New Item" />
+				</form>
+					<br />
+					<input ref="clearCompleted" name="clearCompleted" type="button" value="Clear Completed Items" onClick={this.clear.bind(this)} />
 			</div>
 		);
 	}
