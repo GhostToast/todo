@@ -69,7 +69,7 @@ class ToDoList extends Component {
 		let finishedKey = this.props.todos.indexOf( item );
 		let finishedVal = this.props.todos[ finishedKey ];
 
-		if ( this.props.todos.indexOf( finishedVal ) !== -1 ) {
+		if ( this.props.finished.indexOf( finishedVal ) !== -1 ) {
 			this.dupeWarn();
 			return;
 		}
@@ -94,7 +94,7 @@ class ToDoList extends Component {
 		let unfinishedKey = this.props.finished.indexOf( item );
 		let unfinishedVal = this.props.finished[ unfinishedKey ];
 
-		if ( this.props.finished.indexOf( unfinishedVal ) !== -1 ) {
+		if ( this.props.todos.indexOf( unfinishedVal ) !== -1 ) {
 			this.dupeWarn();
 			return;
 		}
